@@ -52,6 +52,12 @@
   --color-sidebar-border: hsl(var(--sidebar-border));
   --color-sidebar-ring: hsl(var(--sidebar-ring));
 
+  --color-rafa-base: #09090b;
+  --color-rafa-card: #18181b;
+  --color-imperial: #FACC15;
+  --color-cyber-cyan: #22d3ee;
+  --color-cyber-pink: #e879f9;
+
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);

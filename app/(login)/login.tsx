@@ -3,137 +3,115 @@
 import Link from 'next/link';
 import { useActionState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { CircleIcon, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { signIn, signUp } from './actions';
-import { ActionState } from '@/lib/auth/middleware';
 
 export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
   const searchParams = useSearchParams();
   const redirect = searchParams.get('redirect');
-  const priceId = searchParams.get('priceId');
-  const inviteId = searchParams.get('inviteId');
-  const [state, formAction, pending] = useActionState<ActionState, FormData>(
-    mode === 'signin' ? signIn : signUp,
-    { error: '' }
-  );
+  
+  const action = mode === 'signin' ? signIn : signUp;
+  
+  const [state, formAction, pending] = useActionState(action, { error: '' });
 
   return (
-    <div className="min-h-[100dvh] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
+    <div className="min-h-screen flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 bg-rafa-base text-white">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
-          <CircleIcon className="h-12 w-12 text-orange-500" />
+           <h1 className="text-4xl font-black tracking-tighter text-white">
+              RAFA'S <span className="text-imperial">BAR</span>
+           </h1>
         </div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-zinc-100">
           {mode === 'signin'
-            ? 'Sign in to your account'
-            : 'Create your account'}
+            ? 'Staff Login'
+            : 'Staff Registration'}
         </h2>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <form className="space-y-6" action={formAction}>
-          <input type="hidden" name="redirect" value={redirect || ''} />
-          <input type="hidden" name="priceId" value={priceId || ''} />
-          <input type="hidden" name="inviteId" value={inviteId || ''} />
-          <div>
-            <Label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Email
-            </Label>
-            <div className="mt-1">
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                defaultValue={state.email}
-                required
-                maxLength={50}
-                className="appearance-none rounded-full relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm"
-                placeholder="Enter your email"
-              />
+        <div className="bg-rafa-card py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-zinc-800">
+          <form className="space-y-6" action={formAction}>
+            <input type="hidden" name="redirect" value={redirect || ''} />
+            
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-zinc-400">
+                Email
+              </label>
+              <div className="mt-1">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  className="appearance-none block w-full px-3 py-2 border border-zinc-700 rounded-md shadow-sm placeholder-zinc-500 bg-zinc-900 text-white focus:outline-none focus:ring-imperial focus:border-imperial sm:text-sm"
+                />
+              </div>
             </div>
-          </div>
 
-          <div>
-            <Label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Password
-            </Label>
-            <div className="mt-1">
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete={
-                  mode === 'signin' ? 'current-password' : 'new-password'
-                }
-                defaultValue={state.password}
-                required
-                minLength={8}
-                maxLength={100}
-                className="appearance-none rounded-full relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm"
-                placeholder="Enter your password"
-              />
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-zinc-400">
+                Password
+              </label>
+              <div className="mt-1">
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  className="appearance-none block w-full px-3 py-2 border border-zinc-700 rounded-md shadow-sm placeholder-zinc-500 bg-zinc-900 text-white focus:outline-none focus:ring-imperial focus:border-imperial sm:text-sm"
+                />
+              </div>
             </div>
-          </div>
 
-          {state?.error && (
-            <div className="text-red-500 text-sm">{state.error}</div>
-          )}
+            {state?.error && (
+              <div className="text-red-500 text-sm text-center">{state.error}</div>
+            )}
+            {/* @ts-ignore - handling success property dynamically */}
+            {state?.success && (
+               // @ts-ignore
+              <div className="text-green-500 text-sm text-center">{state.success}</div>
+            )}
 
-          <div>
-            <Button
-              type="submit"
-              className="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-              disabled={pending}
-            >
-              {pending ? (
-                <>
-                  <Loader2 className="animate-spin mr-2 h-4 w-4" />
-                  Loading...
-                </>
-              ) : mode === 'signin' ? (
-                'Sign in'
-              ) : (
-                'Sign up'
-              )}
-            </Button>
-          </div>
-        </form>
-
-        <div className="mt-6">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300" />
+            <div>
+              <button
+                type="submit"
+                disabled={pending}
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-imperial hover:bg-yellow-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-imperial disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {pending ? (
+                  <Loader2 className="animate-spin h-5 w-5" />
+                ) : mode === 'signin' ? (
+                  'Sign in'
+                ) : (
+                  'Sign up'
+                )}
+              </button>
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-gray-50 text-gray-500">
-                {mode === 'signin'
-                  ? 'New to our platform?'
-                  : 'Already have an account?'}
-              </span>
-            </div>
-          </div>
+          </form>
 
           <div className="mt-6">
-            <Link
-              href={`${mode === 'signin' ? '/sign-up' : '/sign-in'}${
-                redirect ? `?redirect=${redirect}` : ''
-              }${priceId ? `&priceId=${priceId}` : ''}`}
-              className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-            >
-              {mode === 'signin'
-                ? 'Create an account'
-                : 'Sign in to existing account'}
-            </Link>
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-zinc-700" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-rafa-card text-zinc-500">
+                  Or
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6 grid grid-cols-1 gap-3">
+               <Link
+                 href={mode === 'signin' ? '/sign-up' : '/sign-in'}
+                 className="w-full flex justify-center py-2 px-4 border border-zinc-700 rounded-md shadow-sm text-sm font-medium text-zinc-300 bg-zinc-800 hover:bg-zinc-700"
+               >
+                 {mode === 'signin' ? 'Create account' : 'Sign in'}
+               </Link>
+            </div>
           </div>
         </div>
       </div>
