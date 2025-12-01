@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
-import { DigitalMenu } from '@/components/digital-menu';
-import { GenreBattle } from '@/components/genre-battle';
-import { FlashPromo } from '@/components/flash-promo';
+import { DigitalMenu, GenreBattle } from '@/components/customer';
+import { FlashPromo } from '@/components/customer/FlashPromo';
 
 export default async function Home() {
   const supabase = await createClient();
